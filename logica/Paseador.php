@@ -4,11 +4,11 @@ require_once("persistencia/PaseadorDAO.php");
 require_once("logica/Persona.php");
 
 class Paseador extends Persona {
-    private $foto_perfil;
+    private $foto_url;
 
-    public function __construct($id = "", $nombre = "", $correo = "", $clave = "", $foto_perfil = "") {
+    public function __construct($id = "", $nombre = "", $correo = "", $clave = "", $foto_url = "") {
         parent::__construct($id, $nombre, $correo, $clave);
-        $this->foto_perfil = $foto_perfil;
+        $this->foto_url = $foto_url;
     }
 
     public function getFotoPerfil() {
@@ -18,7 +18,15 @@ class Paseador extends Persona {
     public function setFotoPerfil($foto_perfil) {
         $this->foto_perfil = $foto_perfil;
     }
-
+    
+    public function insertar() {
+        $conexion = new Conexion();
+        $dao = new PaseadorDAO(0, $this->nombre, $this->correo, $this->clave);
+        $conexion->abrir();
+        $conexion->ejecutar($dao->insertar());
+        $conexion->cerrar();
+    }
+    
     public function autenticar() {
         $conexion = new Conexion();
         $paseadorDAO = new PaseadorDAO("", "", $this->correo, $this->clave);
@@ -44,6 +52,17 @@ class Paseador extends Persona {
         $this->correo = $datos[1];
         $this->foto_perfil = $datos[2];
         $conexion->cerrar();
+    }
+    
+    public function existeCorreo() {
+        $conexion = new Conexion();
+        $dao = new PaseadorDAO();
+        $conexion->abrir();
+        $sql = $dao->consultarPorCorreo($this->correo);
+        $conexion->ejecutar($sql);
+        $datos = $conexion->registro();
+        $conexion->cerrar();
+        return ($datos != null);
     }
 }
 ?>

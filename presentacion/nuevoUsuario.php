@@ -35,15 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: ?pid=" . base64_encode("presentacion/autenticar.php"));
                 exit;
             }
-        } elseif ($rol == "admin") {
-            $a = new Admin("", $nombre, $correo, $clave);
-            if ($a->existeCorreo($correo)) {
-                $msg = "Error: Ya existe un correo asociado a otro administrador";
-            } else {
-                $a->insertar();
-                header("Location: ?pid=" . base64_encode("presentacion/autenticar.php"));
-                exit;
-            }
         }
     } else {
         $msg = "Error: Debes completar todos los campos";
@@ -87,7 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <option value="">-- Seleccionar --</option>
               <option value="dueno">Dueño</option>
               <option value="paseador">Paseador</option>
-              <option value="admin">Administrador</option>
             </select>
           </div>
 
