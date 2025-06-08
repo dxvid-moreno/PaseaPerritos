@@ -17,21 +17,21 @@ if (isset($_POST["autenticar"])) {
     if ($admin->autenticar()) {
         $_SESSION["id"] = $admin->getId();
         $_SESSION["rol"] = "admin";
-        header("Location: ?pid=" . base64_encode("presentacion/sesionAdmin.php"));
+        header("Location: ?pid=" . base64_encode("presentacion/admin/sesionAdmin.php"));
         exit;
     } else {
         $dueno = new Dueno("", "", $correo, $clave);
         if ($dueno->autenticar()) {
             $_SESSION["id"] = $dueno->getId();
             $_SESSION["rol"] = "dueno";
-            header("Location: ?pid=" . base64_encode("presentacion/sesionDueno.php"));
+            header("Location: ?pid=" . base64_encode("presentacion/dueno/sesionDueno.php"));
             exit;
         } else {
             $paseador = new Paseador("", "", $correo, $clave);
             if ($paseador->autenticar()) {
                 $_SESSION["id"] = $paseador->getId();
                 $_SESSION["rol"] = "paseador";
-                header("Location: ?pid=" . base64_encode("presentacion/sesionPaseador.php"));
+                header("Location: ?pid=" . base64_encode("presentacion/paseador/sesionPaseador.php"));
                 exit;
             } else {
                 $error = true;
