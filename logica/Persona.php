@@ -5,10 +5,9 @@ abstract class Persona {
     protected $correo;
     protected $clave;
 
-    public function __construct($id = "", $nombre="", $apellido="", $correo="", $clave="") {
+    public function __construct($id = "", $nombre="", $correo="", $clave="") {
         $this -> id = $id;
         $this -> nombre = $nombre;
-        $this -> apellido = $apellido;
         $this -> correo = $correo;
         $this -> clave = $clave;
     }
@@ -19,10 +18,6 @@ abstract class Persona {
     
     public function getNombre() {
         return $this->nombre;
-    }
-
-    public function getApellido() {
-        return $this->apellido;
     }
 
     public function getCorreo() {
@@ -52,5 +47,6 @@ abstract class Persona {
     public function setClave($clave) {
         $this->clave = $clave;
     }
+    
 }
 ?>

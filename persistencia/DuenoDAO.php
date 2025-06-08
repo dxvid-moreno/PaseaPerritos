@@ -37,5 +37,8 @@ class DuenoDAO {
                     clave = '" . md5($this->clave) . "'
                 WHERE idDueno = '" . $this->id . "'";
     }
+    public function consultarPorCorreo() {
+        return "SELECT nombre, correo FROM Dueno WHERE correo = '$this->correo'";
+    }
 }
 ?>

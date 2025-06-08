@@ -23,7 +23,15 @@ class Dueno extends Persona {
             return false;
         }
     }
-
+    
+    public function insertar() {
+        $conexion = new Conexion();
+        $dao = new DuenoDAO(0, $this->nombre, $this->correo, $this->clave);
+        $conexion->abrir();
+        $conexion->ejecutar($dao->insertar());
+        $conexion->cerrar();
+    }
+    
     public function consultar() {
         $conexion = new Conexion();
         $duenoDAO = new DuenoDAO($this->id);
@@ -33,6 +41,17 @@ class Dueno extends Persona {
         $this->nombre = $datos[0];
         $this->correo = $datos[1];
         $conexion->cerrar();
+    }
+    
+    public function existeCorreo() {
+        $conexion = new Conexion();
+        $dao = new DuenoDAO();
+        $conexion->abrir();
+        $sql = $dao->consultarPorCorreo($this->correo);
+        $conexion->ejecutar($sql);
+        $datos = $conexion->registro();
+        $conexion->cerrar();
+        return ($datos != null);
     }
 }
 ?>
