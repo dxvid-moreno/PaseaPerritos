@@ -4,15 +4,17 @@ require_once("persistencia/FacturaDAO.php");
 
 class Factura {
     private $id;
+    private $id_factura;
     private $codigo_qr;
     private $fecha_emision;
     private $total;
 
-    public function __construct($id = "", $codigo_qr = "", $fecha_emision = "", $total = "") {
+    public function __construct($id = "", $codigo_qr = "", $fecha_emision = "", $total = "", $id_factura="") {
         $this->id = $id;
         $this->codigo_qr = $codigo_qr;
         $this->fecha_emision = $fecha_emision;
         $this->total = $total;
+        $this->id_factura = $id_factura;
     }
 
     public function getId() {
@@ -29,6 +31,10 @@ class Factura {
 
     public function getTotal() {
         return $this->total;
+    }
+    
+    public function getIdFactura() {
+        return $this->id_factura;
     }
 
     public function setId($id) {

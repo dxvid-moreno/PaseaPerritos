@@ -1,7 +1,8 @@
 <?php
-require_once("persistencia/Conexion.php");
-require_once("persistencia/PaseadorDAO.php");
-require_once("logica/Persona.php");
+require_once(__DIR__ . "/../persistencia/Conexion.php");
+require_once(__DIR__ . "/../persistencia/PaseadorDAO.php");
+require_once(__DIR__ . "/../logica/Persona.php");
+
 
 class Paseador extends Persona {
     private $foto_url;

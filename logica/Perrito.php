@@ -1,6 +1,7 @@
 <?php
-require_once("persistencia/Conexion.php");
-require_once("persistencia/PerritoDAO.php");
+require_once(__DIR__ . "/../persistencia/Conexion.php");
+require_once(__DIR__ . "/../persistencia/PerritoDAO.php");
+
 
 class Perrito {
     private $id;

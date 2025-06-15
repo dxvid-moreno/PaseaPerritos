@@ -44,7 +44,7 @@ class PaseoDAO {
                 INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
                 INNER JOIN Dueno d ON pe.idDueno = d.idDueno
                 INNER JOIN TarifaPaseador tp ON tp.idPaseador = p.idPaseador
-                INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
+                INNER JOIN Estado_Paseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
                 WHERE p.idPaseador = '" . $idPaseador . "'
                 ORDER BY p.fecha DESC, p.hora_inicio DESC";
     }
@@ -76,5 +76,50 @@ class PaseoDAO {
                     (hora_inicio < '" . $hora_fin . "' AND hora_fin > '" . $hora_inicio . "')
                 )";
     }
+    public function consultarPorEstado($estadoId, $rol, $usuarioId) {
+        $filtro = "";
+        
+        if ($rol == "dueno") {
+            $filtro = "AND pe.idDueno = '$usuarioId'";
+        } else if ($rol == "paseador") {
+            $filtro = "AND p.idPaseador = '$usuarioId'";
+        }
+        
+        return "SELECT p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin,
+                   pe.nombre AS perrito_nombre, d.nombre AS dueno_nombre,
+                   pa.nombre AS paseador_nombre, ep.nombre AS estado_paseo, tp.valor_hora
+            FROM Paseo p
+            INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
+            INNER JOIN Dueno d ON pe.idDueno = d.idDueno
+            INNER JOIN Paseador pa ON p.idPaseador = pa.idPaseador
+            INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
+            INNER JOIN TarifaPaseador tp ON tp.idPaseador = pa.idPaseador
+            WHERE p.idEstadoPaseo = '$estadoId'
+            $filtro
+            ORDER BY p.fecha DESC, p.hora_inicio DESC";
+    }
+    
+    public function consultarTodosPorRol($rol, $usuarioId) {
+        $filtro = "";
+        
+        if ($rol == "dueno") {
+            $filtro = "WHERE pe.idDueno = '$usuarioId'";
+        } else if ($rol == "paseador") {
+            $filtro = "WHERE p.idPaseador = '$usuarioId'";
+        }
+        
+        return "SELECT p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin,
+                   pe.nombre AS perrito_nombre, d.nombre AS dueno_nombre,
+                   pa.nombre AS paseador_nombre, ep.nombre AS estado_paseo, tp.valor_hora
+            FROM Paseo p
+            INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
+            INNER JOIN Dueno d ON pe.idDueno = d.idDueno
+            INNER JOIN Paseador pa ON p.idPaseador = pa.idPaseador
+            INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
+            INNER JOIN TarifaPaseador tp ON tp.idPaseador = pa.idPaseador
+            $filtro
+            ORDER BY p.fecha DESC, p.hora_inicio DESC";
+    }
+    
 }
 ?>

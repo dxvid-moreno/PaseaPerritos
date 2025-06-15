@@ -36,10 +36,17 @@ if (isset($_SESSION["id"])) {
             color: #222;
             line-height: 1.5;
         }
+        
+        header h1 {
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            cursor: default;
+        }
         header {
+            margin-top: 60px;
             background-color: #2e7d32;
             color: white;
-            padding: 15px 30px;
+            padding: 5px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -47,28 +54,31 @@ if (isset($_SESSION["id"])) {
             top: 0;
             z-index: 100;
         }
-        header h1 {
-            font-size: 1.9rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            cursor: default;
-        }
+        
         nav ul {
+            margin-top: 15px;
             list-style: none;
             display: flex;
-            gap: 25px;
+            align-items: center; /* centrado vertical */
+            gap: 15px; /* reduce espacio horizontal */
             font-weight: 600;
         }
+        
         nav ul li a {
             text-decoration: none;
             color: white;
-            padding: 7px 12px;
+            padding: 6px 10px;
             border-radius: 4px;
             transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center; /* centrado ícono + texto */
+            font-size: 0.95rem;
         }
+        
         nav ul li a:hover {
             background-color: #1b4d20;
         }
+
         main {
             max-width: 1100px;
             margin: 60px auto;
@@ -88,12 +98,10 @@ if (isset($_SESSION["id"])) {
         }
         .hero h2 {
             font-size: 3.2rem;
-            margin-bottom: 15px;
         }
         .hero p {
             font-size: 1.3rem;
             max-width: 720px;
-            margin-bottom: 30px;
         }
         .btn-primary {
             background-color: #43a047;
@@ -131,7 +139,6 @@ if (isset($_SESSION["id"])) {
         .feature-card h3 {
             color: #388e3c;
             font-size: 1.4rem;
-            margin-bottom: 15px;
             font-weight: 700;
         }
         .feature-card p {
@@ -165,7 +172,7 @@ if (isset($_SESSION["id"])) {
 <body>
 
 <header>
-    <h1>Paseadores de Perros</h1>
+    <h1>Pasea Perritos</h1>
     <nav>
         <ul>
             <li><a href="index.php">Inicio</a></li>

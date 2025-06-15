@@ -1,6 +1,7 @@
 <?php
 $rol = isset($_SESSION["rol"]) ? $_SESSION["rol"] : null;
-$nombre = ""; // Suponiendo que tienes el nombre del usuario en sesión o lo traes desde la DB
+$nombre = "";
+
 if (isset($_SESSION["id"])) {
     if ($rol == "admin") {
         $admin = new Admin($_SESSION["id"]);
@@ -18,50 +19,55 @@ if (isset($_SESSION["id"])) {
 }
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
     <div class="container-fluid">
-        <a class="navbar-brand" href="?pid=<?php echo base64_encode("presentacion/inicio.php") ?>">
-            <img width="60" height="60" src="https://img.icons8.com/ios-filled/100/ffffff/dog-training.png" alt="Registro" />
+        <!-- Logo y marca -->
+        <a class="navbar-brand d-flex align-items-center" href="?pid=<?php echo base64_encode("presentacion/inicio.php") ?>">
+            <img src="https://img.icons8.com/ios-filled/100/ffffff/dog-training.png" alt="Registro" width="40" height="40" class="me-2" />
+            <span class="fw-bold">DogGo</span>
         </a>
+
+        <!-- Botón para colapsar menú en dispositivos pequeños -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+        <!-- Ítems de navegación -->
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+            <!-- Opciones por rol -->
+            <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="inicio.php">Inicio</a>
+                    <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/inicio.php"); ?>">Inicio</a>
                 </li>
 
-                <?php if ($rol == "admin"): ?>
+                <?php if ($rol === "admin"): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="admin_paseadores.php">Administrar Paseadores</a>
+                        <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/admin/administrar_paseadores.php"); ?>">Administrar Paseadores</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="estadisticas.php">Estadísticas</a>
+                        <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/admin/administrar_dueno.php"); ?>">Administrar Dueños</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="logs.php">Seguridad y Logs</a>
-                    </li>
-                <?php endif; ?>
-
-                <?php if ($rol == "dueno"): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="mis_paseos.php">Mis Paseos</a>
+                        <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/admin/administrar_perrito.php"); ?>">Administrar Perritos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="mis_perritos.php">Mis Perritos</a>
+                        <a class="nav-link" href="logs.php">Estadísticas</a>
+                    </li>
+                <?php elseif ($rol === "dueno"): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/dueno/consultarPaseos.php"); ?>">Consultar Paseos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="reservar_paseo.php">Reservar Paseo</a>
+                        <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/dueno/misPerritos.php"); ?>">Mis Perritos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/dueno/reservarPaseo.php"); ?>">Reservar Paseo</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="facturas.php">Facturas</a>
                     </li>
-                <?php endif; ?>
-
-                <?php if ($rol == "paseador"): ?>
+                <?php elseif ($rol === "paseador"): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="mis_paseos_paseador.php">Mis Paseos</a>
                     </li>
@@ -72,11 +78,24 @@ if (isset($_SESSION["id"])) {
                         <a class="nav-link" href="facturas.php">Facturas</a>
                     </li>
                 <?php endif; ?>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/autenticar.php") ?>&sesion=false">Cerrar Sesión</a>
-                </li>
             </ul>
+
+            <!-- Usuario y cerrar sesión -->
+            <ul class="navbar-nav d-flex align-items-center">
+                <?php if (!empty($rol) && !empty($nombre)): ?>
+                    <li class="nav-item me-3">
+                        <span class="text-white">
+                            <?php echo ucfirst($rol) . ": " . htmlspecialchars($nombre); ?>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/autenticar.php") ?>&sesion=false">Cerrar Sesión</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+
+
+
         </div>
     </div>
 </nav>

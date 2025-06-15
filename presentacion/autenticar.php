@@ -2,7 +2,6 @@
 require_once("logica/Admin.php");
 require_once("logica/Dueno.php");
 require_once("logica/Paseador.php");
-
 if (isset($_GET["sesion"]) && $_GET["sesion"] == "false") {
     session_destroy();
 }
@@ -48,15 +47,41 @@ if (isset($_POST["autenticar"])) {
   <title>Autenticación</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
-<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <div class="container-fluid">
+        <!-- Logo y marca -->
+        <a class="navbar-brand d-flex align-items-center" href="index.php">
+            <img src="https://img.icons8.com/ios-filled/100/ffffff/dog-training.png" alt="DogGo" width="40" height="40" class="me-2" />
+            <span class="fw-bold">DogGo</span>
+        </a>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid" >
-      <a class="navbar-brand" href="?pid=<?php echo base64_encode("presentacion/inicio.php") ?>">
-        <img width="60" height="60" src="https://img.icons8.com/ios-filled/100/ffffff/dog-training.png" alt="Registro" />
-      </a>
+        <!-- Botón para colapsar menú en dispositivos pequeños -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menú -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav d-flex align-items-center">
+                <li class="nav-item me-2">
+                    <a class="nav-link nav-btn" href="?pid=<?php echo base64_encode("presentacion/autenticar.php"); ?>">
+                        
+                        Iniciar Sesión
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-btn" href="?pid=<?php echo base64_encode("presentacion/nuevoUsuario.php"); ?>">
+                        
+                        Registrarse
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
+
+<body class="bg-light">
 
   <div class="container my-5 d-flex justify-content-center align-items-start" style="min-height:70vh;">
     <div class="card shadow" style="max-width:420px; width:100%;">

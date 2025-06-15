@@ -106,5 +106,59 @@ class Paseo {
     public function setFactura($factura) {
         $this->factura = $factura;
     }
+    
+    public function consultarPorEstado($estadoId, $rol, $usuarioId) {
+        
+        $conexion = new Conexion();
+        $conexion->abrir();
+        
+        $paseoDAO = new PaseoDAO();
+        $sql = $paseoDAO->consultarPorEstado($estadoId, $rol, $usuarioId);
+        
+        $conexion->ejecutar($sql);
+        
+        $paseos = [];
+        while (($registro = $conexion->registro())) {
+            $paseo = new Paseo();
+            $paseo->setId($registro[0]);
+            $paseo->setFecha($registro[1]);
+            $paseo->setHoraInicio($registro[2]);
+            $paseo->setDuracion($registro[3]);
+            $paseo->setPaseador(new Paseador("", $registro[6])); 
+            $paseo->setPrecio($registro[8]); 
+            $paseo->setEstadoPaseo(new EstadoPaseo("", $registro[7]));
+            $paseos[] = $paseo;
+        }
+        
+        $conexion->cerrar();
+        return $paseos;
+    }
+    
+    public function consultarTodosPorRol($rol, $usuarioId) {
+        $conexion = new Conexion();
+        $conexion->abrir();
+        
+        $paseoDAO = new PaseoDAO();
+        $sql = $paseoDAO->consultarTodosPorRol($rol, $usuarioId);
+        
+        $conexion->ejecutar($sql);
+        
+        $paseos = [];
+        while (($registro = $conexion->registro())) {
+            $paseo = new Paseo();
+            $paseo->setId($registro[0]);
+            $paseo->setFecha($registro[1]);
+            $paseo->setHoraInicio($registro[2]);
+            $paseo->setDuracion($registro[3]);
+            $paseo->setPaseador(new Paseador("", $registro[6])); // nombre del paseador
+            $paseo->setPrecio($registro[8]); // valor hora
+            $paseo->setEstadoPaseo(new EstadoPaseo("", $registro[7])); // nombre del estado
+            $paseos[] = $paseo;
+        }
+        
+        $conexion->cerrar();
+        return $paseos;
+    }
+    
 }
 ?>

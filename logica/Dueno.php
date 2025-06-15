@@ -1,7 +1,7 @@
 <?php
-require_once("persistencia/Conexion.php");
-require_once("persistencia/DuenoDAO.php");
-require_once("logica/Persona.php");
+require_once(__DIR__ . "/../persistencia/Conexion.php");
+require_once(__DIR__ . "/../persistencia/DuenoDAO.php");
+require_once(__DIR__ . "/../logica/Persona.php");
 
 class Dueno extends Persona {
 
