@@ -72,9 +72,9 @@ $colores = [
                     echo "<tr>";
                     echo "<td>" . $p->getFecha() . "</td>";
                     echo "<td>" . $p->getHoraInicio() . "</td>";
-                    echo "<td>" . $p->getDuracion() . "</td>";
+                    echo "<td>" . $p->getHoraFin() . "</td>";
                     echo "<td>" . $p->getPaseador()->getNombre() . "</td>";
-                    echo "<td>$" . number_format($p->getPrecio(), 0, ',', '.') . "</td>";
+                    echo "<td>$" . number_format($p->getTarifa(), 0, ',', '.') . "</td>";
                     echo "<td>" . $p->getEstadoPaseo()->getNombre() . "</td>";
                     echo "<td>aqui va ajax</td>";
                     echo "</tr>";

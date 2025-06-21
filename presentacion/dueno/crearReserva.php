@@ -20,7 +20,7 @@
         $tarifa = new TarifaPaseador("", $idPaseador);
         $tarifa->consultarActualPorPaseador();
         $valor= $tarifa -> getValorHora();
-        
+        $factura = new Factura("", "", date("Y-m-d"), $valor);
         $paseo = new Paseo(
             "",
             $_POST['fecha'],
