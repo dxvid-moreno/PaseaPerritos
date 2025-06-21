@@ -19,8 +19,11 @@
         
         $tarifa = new TarifaPaseador("", $idPaseador);
         $tarifa->consultarActualPorPaseador();
-        $valor= $tarifa -> getValorHora();
-        $factura = new Factura("", "", date("Y-m-d"), $valor);
+        $idTarifa = $tarifa->getId();         // ✔️ ID de la tarifa
+        $valorHora = $tarifa->getValorHora(); // ✔️ Valor por hora
+        
+        $factura = new Factura("", "", date("Y-m-d"), $valorHora);
+        $precio = ((int)$_POST['duracion'] / 60) * (float)$valorHora;
         $paseo = new Paseo(
             "",
             $_POST['fecha'],
@@ -29,8 +32,13 @@
             $_POST['idPerrito'],
             $idDueno,
             $idPaseador,
-            1, $valor
+            1,          
+            $idTarifa,
+            "",          
+            $precio      
             );
+        
+        
         $resultado = $paseo->insertarConValidacion();
     }
 ?>

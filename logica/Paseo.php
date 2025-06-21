@@ -15,7 +15,9 @@ class Paseo {
     private $estadoPaseo;
     private $tarifa;
     
-    public function __construct($id = "", $fecha = "", $hora_inicio = "", $duracion = "", $perrito = null, $dueno = null, $paseador = null, $estadoPaseo = null, $tarifa = "",$hora_fin="") {
+    private $precio;
+    
+    public function __construct($id = "", $fecha = "", $hora_inicio = "", $duracion = "", $perrito = null, $dueno = null, $paseador = null, $estadoPaseo = null, $tarifa = "", $hora_fin = "", $precio = 0) {
         $this->id = $id;
         $this->fecha = $fecha;
         $this->hora_inicio = $hora_inicio;
@@ -26,7 +28,9 @@ class Paseo {
         $this->estadoPaseo = $estadoPaseo;
         $this->tarifa = $tarifa;
         $this->hora_fin = $hora_fin;
+        $this->precio = $precio;
     }
+    
     
     public function getId() {
         return $this->id;
@@ -72,6 +76,13 @@ class Paseo {
         return $this->hora_fin;
     }
     
+    public function getPrecio() {
+        return $this->precio;
+    }
+    
+    public function setPrecio($precio) {
+        $this->precio = $precio;
+    }
     
     public function setId($id) {
         $this->id = $id;
@@ -136,9 +147,10 @@ class Paseo {
             $this->hora_inicio,
             $this->calcularHoraFin(),
             $idTarifa,
-            null, // aún no tenemos factura
-            $this->duracion
+            $this->precio,      
+            $this->duracion      
             );
+        
         
         $sqlSimultaneo = $dao->consultarPaseosSimultaneos(
             $this->fecha,

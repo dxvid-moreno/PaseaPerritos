@@ -1,9 +1,8 @@
 <?php
 require_once(__DIR__ . "/../persistencia/Conexion.php");
 require_once(__DIR__ . "/../persistencia/FacturaDAO.php");
+require_once(__DIR__ . "/../libs/phpqrcode/qrlib.php");
 
-// Asegúrate de que este archivo exista:
-//require_once(__DIR__ . "/../librerias/phpqrcode/qrlib.php");
 
 class Factura {
     private $id;

@@ -57,6 +57,7 @@ $colores = [
         <thead class="table-dark">
             <tr>
                 <th>Fecha</th>
+                <th>Perrito</th>
                 <th>Hora Inicio</th>
                 <th>Hora Fin</th>
                 <th>Paseador</th>
@@ -71,6 +72,7 @@ $colores = [
                 foreach ($paseos as $p) {
                     echo "<tr>";
                     echo "<td>" . $p->getFecha() . "</td>";
+                    echo "<td>" . $p->getPerrito()->getNombre() . "</td>";
                     echo "<td>" . $p->getHoraInicio() . "</td>";
                     echo "<td>" . $p->getHoraFin() . "</td>";
                     echo "<td>" . $p->getPaseador()->getNombre() . "</td>";

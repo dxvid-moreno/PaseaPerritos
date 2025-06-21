@@ -24,8 +24,9 @@ class Conexion{
         return $this -> resultado -> num_rows;
     }
     public function obtenerUltimoId() {
-        return $this->getConexion()->insert_id;
+        return $this->conexion->insert_id;
     }
+    
 }
 
 ?>

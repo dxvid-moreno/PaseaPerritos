@@ -10,8 +10,10 @@ class PaseoDAO {
     private $hora_fin;
     private $tarifa;
     private $duracion;
+    private $precio;
     
-    public function __construct($id = 0, $perrito = 0, $paseador = 0, $estadoPaseo = 0, $fecha = "", $hora_inicio = "", $hora_fin = "", $tarifa = "", $duracion = "") {
+    
+    public function __construct($id = 0, $perrito = 0, $paseador = 0, $estadoPaseo = 0, $fecha = "", $hora_inicio = "", $hora_fin = "", $tarifa = "", $precio = "", $duracion = "") {
         $this->id = $id;
         $this->perrito = $perrito;
         $this->paseador = $paseador;
@@ -20,8 +22,10 @@ class PaseoDAO {
         $this->hora_inicio = $hora_inicio;
         $this->hora_fin = $hora_fin;
         $this->tarifa = $tarifa;
+        $this->precio = $precio;
         $this->duracion = $duracion;
     }
+    
     
     public function insertar() {
         $idPerrito = is_object($this->perrito) ? $this->perrito->getId() : $this->perrito;
@@ -29,17 +33,19 @@ class PaseoDAO {
         $idEstado = is_object($this->estadoPaseo) ? $this->estadoPaseo->getId() : $this->estadoPaseo;
         $idTarifa = ($this->tarifa === null ? "NULL" : "'" . $this->tarifa . "'");
         
-        return "INSERT INTO Paseo (idPerrito, idPaseador, idEstadoPaseo, fecha, hora_inicio, hora_fin, idTarifa, duracion_minutos)
-                VALUES (
-                    '$idPerrito',
-                    '$idPaseador',
-                    '$idEstado',
-                    '$this->fecha',
-                    '$this->hora_inicio',
-                    '$this->hora_fin',
-                    $idTarifa,
-                    '$this->duracion'
-                )";
+        return "INSERT INTO Paseo (idPerrito, idPaseador, idEstadoPaseo, fecha, hora_inicio, hora_fin, idTarifa, precio, duracion_minutos)
+        VALUES (
+            '$idPerrito',
+            '$idPaseador',
+            '$idEstado',
+            '$this->fecha',
+            '$this->hora_inicio',
+            '$this->hora_fin',
+            $idTarifa,
+            '$this->precio',
+            '$this->duracion'
+        )";
+            
     }
     
     public function consultarPaseosSimultaneos($fecha, $hora_inicio, $hora_fin, $idPaseador) {
