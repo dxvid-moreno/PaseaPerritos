@@ -3,26 +3,34 @@ require_once(__DIR__ . "/../persistencia/Conexion.php");
 require_once(__DIR__ . "/../persistencia/PaseadorDAO.php");
 require_once(__DIR__ . "/../logica/Persona.php");
 
-
 class Paseador extends Persona {
     private $foto_url;
+    private $descripcion;
 
-    public function __construct($id = "", $nombre = "", $correo = "", $clave = "", $foto_url = "") {
+    public function __construct($id = "", $nombre = "", $correo = "", $clave = "", $foto_url = "", $descripcion="") {
         parent::__construct($id, $nombre, $correo, $clave);
         $this->foto_url = $foto_url;
+        $this->descripcion = $descripcion;
     }
 
-    public function getFotoPerfil() {
-        return $this->foto_perfil;
+    public function getFotoUrl() {
+        return $this->foto_url;
+    }
+    public function getDescripcion() {
+        return $this->descripcion;
     }
 
     public function setFotoPerfil($foto_perfil) {
         $this->foto_perfil = $foto_perfil;
     }
     
+    public function setDescripcion($descripcion) {
+        $this->descripcion = $descripcion;
+    }
+    
     public function insertar() {
         $conexion = new Conexion();
-        $dao = new PaseadorDAO(0, $this->nombre, $this->correo, $this->clave);
+        $dao = new PaseadorDAO(0, $this->nombre, $this->correo, $this->clave, $this->foto_url, $this->descripcion);
         $conexion->abrir();
         $conexion->ejecutar($dao->insertar());
         $conexion->cerrar();
@@ -51,7 +59,7 @@ class Paseador extends Persona {
         $datos = $conexion->registro();
         $this->nombre = $datos[0];
         $this->correo = $datos[1];
-        $this->foto_perfil = $datos[2];
+        $this->foto_url = $datos[2];
         $conexion->cerrar();
     }
     
@@ -65,5 +73,42 @@ class Paseador extends Persona {
         $conexion->cerrar();
         return ($datos != null);
     }
+    
+    public function consultarTodos() {
+        $conexion = new Conexion();
+        $dao = new PaseadorDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->consultarTodos());
+        
+        $resultado = array();
+        while ($registro = $conexion->registro()) {
+            $paseador = new Paseador($registro[0], $registro[1], $registro[2], "", $registro[3], $registro[4]);
+            $tarifa = new TarifaPaseador("","",$registro[5]);
+            $resultado[] = [
+                "paseador" => $paseador,
+                "tarifa" => $tarifa
+            ];
+        }
+        
+        $conexion->cerrar();
+        return $resultado;
+    }
+    
+    public function obtenerUltimoId() {
+        $conexion = new Conexion();
+        $dao = new PaseadorDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->obtenerUltimoId());
+        
+        $id = 0;
+        if ($registro = $conexion->registro()) {
+            $id = $registro[0];
+        }
+        
+        $conexion->cerrar();
+        return $id;
+    }
+    
+    
 }
 ?>

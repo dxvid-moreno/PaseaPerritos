@@ -8,9 +8,11 @@ class PaseoDAO {
     private $fecha;
     private $hora_inicio;
     private $hora_fin;
+    private $tarifa;
     private $factura;     // idFactura (opcional)
-
-    public function __construct($id = 0, $perrito = 0, $paseador = 0, $estadoPaseo = 0, $fecha = "", $hora_inicio = "", $hora_fin = "", $factura = null) {
+    private $duracion;
+    
+    public function __construct($id = 0, $perrito = 0, $paseador = 0, $estadoPaseo = 0, $fecha = "", $hora_inicio = "", $hora_fin = "",$tarifa="",$factura = null,$duracion="") {
         $this->id = $id;
         $this->perrito = $perrito;
         $this->paseador = $paseador;
@@ -19,6 +21,8 @@ class PaseoDAO {
         $this->hora_inicio = $hora_inicio;
         $this->hora_fin = $hora_fin;
         $this->factura = $factura;
+        $this->tarifa = $tarifa;
+        $this->duracion = $duracion;
     }
 
     public function consultar() {
@@ -50,9 +54,26 @@ class PaseoDAO {
     }
 
     public function insertar() {
-        return "INSERT INTO Paseo (idPerrito, idPaseador, idEstadoPaseo, fecha, hora_inicio, hora_fin, idFactura)
-                VALUES ('" . $this->perrito . "', '" . $this->paseador . "', '" . $this->estadoPaseo . "', '" . $this->fecha . "', '" . $this->hora_inicio . "', '" . $this->hora_fin . "', " . ($this->factura === null ? "NULL" : "'" . $this->factura . "'") . ")";
+        $idPerrito = is_object($this->perrito) ? $this->perrito->getId() : $this->perrito;
+        $idPaseador = is_object($this->paseador) ? $this->paseador->getId() : $this->paseador;
+        $idEstadoPaseo = is_object($this->estadoPaseo) ? $this->estadoPaseo->getId() : $this->estadoPaseo;
+        $idFactura = ($this->factura === null ? "NULL" : "'" . $this->factura . "'");
+        $idTarifa = ($this->tarifa === null ? "NULL" : "'" . $this->tarifa . "'");
+        
+        return "INSERT INTO Paseo (idPerrito, idPaseador, idEstadoPaseo, fecha, hora_inicio, hora_fin, idFactura, idTarifa, duracion_minutos)
+            VALUES (
+                '$idPerrito',
+                '$idPaseador',
+                '$idEstadoPaseo',
+                '$this->fecha',
+                '$this->hora_inicio',
+                '$this->hora_fin',
+                $idFactura,
+                $idTarifa,
+                '$this->duracion'
+            )";
     }
+    
 
     public function actualizar() {
         return "UPDATE Paseo
@@ -68,14 +89,19 @@ class PaseoDAO {
 
     // Consulta para validar que un paseador no tenga más de 2 paseos simultáneos
     public function consultarPaseosSimultaneos($fecha, $hora_inicio, $hora_fin, $idPaseador) {
+        // Extraer ID si es objeto
+        $id = is_object($idPaseador) ? $idPaseador->getId() : $idPaseador;
+        
         return "SELECT COUNT(*) as cantidad
-                FROM Paseo
-                WHERE idPaseador = '" . $idPaseador . "'
-                AND fecha = '" . $fecha . "'
-                AND (
-                    (hora_inicio < '" . $hora_fin . "' AND hora_fin > '" . $hora_inicio . "')
-                )";
+            FROM Paseo
+            WHERE idPaseador = '" . $id . "'
+            AND fecha = '" . $fecha . "'
+            AND (
+                (hora_inicio < '" . $hora_fin . "' AND hora_fin > '" . $hora_inicio . "')
+            )";
     }
+    
+    
     public function consultarPorEstado($estadoId, $rol, $usuarioId) {
         $filtro = "";
         
@@ -86,17 +112,18 @@ class PaseoDAO {
         }
         
         return "SELECT p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin,
-                   pe.nombre AS perrito_nombre, d.nombre AS dueno_nombre,
-                   pa.nombre AS paseador_nombre, ep.nombre AS estado_paseo, tp.valor_hora
-            FROM Paseo p
-            INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
-            INNER JOIN Dueno d ON pe.idDueno = d.idDueno
-            INNER JOIN Paseador pa ON p.idPaseador = pa.idPaseador
-            INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
-            INNER JOIN TarifaPaseador tp ON tp.idPaseador = pa.idPaseador
-            WHERE p.idEstadoPaseo = '$estadoId'
-            $filtro
-            ORDER BY p.fecha DESC, p.hora_inicio DESC";
+               pe.nombre AS perrito_nombre, d.nombre AS dueno_nombre,
+               pa.nombre AS paseador_nombre, ep.nombre AS estado_paseo, tp.valor_hora,
+               p.idFactura /* **ADD THIS LINE** */
+        FROM Paseo p
+        INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
+        INNER JOIN Dueno d ON pe.idDueno = d.idDueno
+        INNER JOIN Paseador pa ON p.idPaseador = pa.idPaseador
+        INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
+        INNER JOIN TarifaPaseador tp ON tp.idPaseador = pa.idPaseador
+        WHERE p.idEstadoPaseo = '$estadoId'
+        $filtro
+        ORDER BY p.fecha DESC, p.hora_inicio DESC";
     }
     
     public function consultarTodosPorRol($rol, $usuarioId) {
@@ -109,16 +136,17 @@ class PaseoDAO {
         }
         
         return "SELECT p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin,
-                   pe.nombre AS perrito_nombre, d.nombre AS dueno_nombre,
-                   pa.nombre AS paseador_nombre, ep.nombre AS estado_paseo, tp.valor_hora
-            FROM Paseo p
-            INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
-            INNER JOIN Dueno d ON pe.idDueno = d.idDueno
-            INNER JOIN Paseador pa ON p.idPaseador = pa.idPaseador
-            INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
-            INNER JOIN TarifaPaseador tp ON tp.idPaseador = pa.idPaseador
-            $filtro
-            ORDER BY p.fecha DESC, p.hora_inicio DESC";
+               pe.nombre AS perrito_nombre, d.nombre AS dueno_nombre,
+               pa.nombre AS paseador_nombre, ep.nombre AS estado_paseo, tp.valor_hora,
+               p.idFactura /* **ADD THIS LINE** */
+        FROM Paseo p
+        INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
+        INNER JOIN Dueno d ON pe.idDueno = d.idDueno
+        INNER JOIN Paseador pa ON p.idPaseador = pa.idPaseador
+        INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
+        INNER JOIN TarifaPaseador tp ON tp.idPaseador = pa.idPaseador
+        $filtro
+        ORDER BY p.fecha DESC, p.hora_inicio DESC";
     }
     
 }

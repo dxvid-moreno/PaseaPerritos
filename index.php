@@ -24,10 +24,27 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.min.js" ></script>
 </head>
 <?php 
-if(!isset($_GET["pid"])){
-    include ("presentacion/inicio.php");
-}else{
-    include (base64_decode($_GET["pid"]));
-}    
+if (!isset($_GET["pid"])) {
+    include("presentacion/inicio.php");
+} else {
+    $rutaCompleta = base64_decode($_GET["pid"]);
+    $partes = explode("?", $rutaCompleta);
+    $archivo = $partes[0];
+
+    // Extraer parámetros y agregarlos a $_GET
+    if (isset($partes[1])) {
+        parse_str($partes[1], $parametros);
+        foreach ($parametros as $key => $value) {
+            $_GET[$key] = $value;
+        }
+    }
+
+    if (file_exists($archivo)) {
+        include($archivo);
+    } else {
+        echo "Archivo no encontrado: $archivo";
+    }
+}
 ?>
+
 </html>

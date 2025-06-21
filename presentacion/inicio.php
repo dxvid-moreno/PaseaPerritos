@@ -1,24 +1,3 @@
-<?php
-$rol = $_SESSION["rol"] ?? null;
-$nombre = "Invitado";
-
-if (isset($_SESSION["id"])) {
-    if ($rol == "Administrador") {
-        $admin = new Admin($_SESSION["id"]);
-        $admin->consultar();
-        $nombre = $admin->getNombre();
-    } elseif ($rol == "Dueño") {
-        $dueno = new Dueno($_SESSION["id"]);
-        $dueno->consultar();
-        $nombre = $dueno->getNombre();
-    } elseif ($rol == "Paseador") {
-        $paseador = new Paseador($_SESSION["id"]);
-        $paseador->consultar();
-        $nombre = $paseador->getNombre();
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,11 +5,7 @@ if (isset($_SESSION["id"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Paseadores de Perros - Inicio</title>
     <style>
-        /* Reset y básicos */
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+
         body {
             background: #e9f5ee;
             color: #222;
@@ -43,7 +18,6 @@ if (isset($_SESSION["id"])) {
             cursor: default;
         }
         header {
-            margin-top: 60px;
             background-color: #2e7d32;
             color: white;
             padding: 5px 30px;
@@ -114,7 +88,9 @@ if (isset($_SESSION["id"])) {
             cursor: pointer;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin-top: 20px;
         }
+
         .btn-primary:hover {
             background-color: #2e7d32;
         }
@@ -176,26 +152,18 @@ if (isset($_SESSION["id"])) {
     <nav>
         <ul>
             <li><a href="index.php">Inicio</a></li>
-            <?php if ($rol): ?>
-                <li><a href="perfil.php">Hola, <?= htmlspecialchars($nombre) ?></a></li>
-                <li><a class="dropdown-item" href="?pid=<?php echo base64_encode("presentacion/autenticar.php")?>&sesion=false">Cerrar Sesion</a></li>
-            <?php else: ?>
                 <li><a class="dropdown-item" href="?pid=<?php echo base64_encode("presentacion/autenticar.php")?>">Iniciar Sesión</a></li>
                 <li><a class="dropdown-item" href="?pid=<?php echo base64_encode("presentacion/nuevoUsuario.php")?>">Registrarse</a></li>
-            <?php endif; ?>
         </ul>
     </nav>
 </header>
 
 <main>
-    <section class="hero">
+	<section class="hero">
         <h2>Conecta con los mejores paseadores para tus perritos</h2>
         <p>Plataforma confiable para dueños y paseadores. Reserva paseos, administra perfiles y disfruta la tranquilidad que mereces.</p>
-        <?php if (!$rol): ?>
-            <a href="registro.php" class="btn-primary" title="Comienza ahora">¡Comienza ahora!</a>
-        <?php endif; ?>
+        <a href="?pid=<?php echo base64_encode("presentacion/nuevoUsuario.php") ?>" class="btn-primary" title="Comienza ahora">¡Comienza ahora!</a>
     </section>
-
     <section class="features" aria-label="Características principales">
         <article class="feature-card">
             <h3>Fácil Registro</h3>
