@@ -28,6 +28,10 @@ class Paseador extends Persona {
         return $this->estado;
     }
     
+    public function setFotoUrl($fotoUrl) {
+        $this->foto = $fotoUrl;
+    }
+    
     public function setFotoPerfil($foto_perfil) {
         $this->foto_perfil = $foto_perfil;
     }
