@@ -53,5 +53,14 @@ class Dueno extends Persona {
         $conexion->cerrar();
         return ($datos != null);
     }
+    
+    public function actualizar() {
+        $conexion = new Conexion();
+        $dao = new DuenoDAO($this->id, $this->nombre, $this->correo, $this->clave);
+        $conexion->abrir();
+        $conexion->ejecutar($dao->actualizar());
+        $conexion->cerrar();
+    }
+    
 }
 ?>
