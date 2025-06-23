@@ -345,6 +345,60 @@ class Paseo {
         $conexion->cerrar();
     }
     
+    public function obtenerEstadisticas() {
+        $dao = new PaseoDAO();
+        $conexion = new Conexion();
+        $conexion->abrir();
+        
+        // Resumen general
+        $conexion->ejecutar($dao->obtenerResumenEstadisticas());
+        $resumen = $conexion->registro();
+        
+        // Paseos por paseador
+        $conexion->ejecutar($dao->paseosPorPaseador());
+        $paseadores = [];
+        while ($registro = $conexion->registro()) {
+            $paseadores[] = $registro;
+        }
+        
+        // Paseos por estado
+        // Paseos por estado
+        $conexion->ejecutar($dao->paseosPorEstado());
+        $porEstado = [];
+        while ($registro = $conexion->registro()) {
+            $porEstado[] = [
+                "estado" => $registro[0],
+                "cantidad" => $registro[1]
+            ];
+        }
+        
+        
+        $conexion->cerrar();
+        
+        return [
+            "resumen" => $resumen,
+            "porPaseador" => $paseadores,
+            "porEstado" => $porEstado
+        ];
+    }
+    
+    public function obtenerDistribucionPorEstado() {
+        $dao = new PaseoDAO();
+        $conexion = new Conexion();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->obtenerDistribucionPorEstado());
+        
+        $distribucion = [];
+        while ($registro = $conexion->registro()) {
+            $distribucion[] = [
+                "estado" => $registro[0],
+                "cantidad" => $registro[1]
+            ];
+        }
+        
+        $conexion->cerrar();
+        return $distribucion;
+    }
     
     
 }

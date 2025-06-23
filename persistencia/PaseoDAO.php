@@ -151,5 +151,39 @@ class PaseoDAO {
         return "UPDATE paseo SET idEstadoPaseo = " . $this->estadoPaseo->getId() . " WHERE idPaseo = " . $this->id;
     }
     
+    public function obtenerResumenEstadisticas() {
+        return "
+        SELECT
+            COUNT(*) AS total_paseos,
+            SUM(precio) AS total_ingresos,
+            AVG(duracion_minutos) AS duracion_promedio,
+            MIN(fecha) AS fecha_inicio,
+            MAX(fecha) AS fecha_fin
+        FROM Paseo
+    ";
+    }
+    
+    public function paseosPorPaseador() {
+        return "
+        SELECT pa.nombre, COUNT(*) AS cantidad
+        FROM Paseo p
+        INNER JOIN Paseador pa ON p.idPaseador = pa.idPaseador
+        GROUP BY pa.nombre
+        ORDER BY cantidad DESC
+        LIMIT 5
+    ";
+    }
+    
+    public function paseosPorEstado() {
+        return "
+        SELECT ep.nombre AS estado, COUNT(*) AS cantidad
+        FROM Paseo p
+        INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
+        GROUP BY ep.nombre
+        ORDER BY cantidad DESC
+    ";
+    }
+    
+    
 }
 ?>
