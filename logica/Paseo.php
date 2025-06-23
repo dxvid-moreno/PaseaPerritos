@@ -182,6 +182,42 @@ class Paseo {
         $idFactura = $conexion->obtenerUltimoId();
         $this->factura = $idFactura;
         
+        // 5. Crear el PDF
+        require_once(__DIR__ . "/../libs/fpdf186/fpdf.php");
+        
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial','B',16);
+        
+        // Contenido
+        $pdf->Cell(0, 10, 'Detalle del Paseo', 0, 1, 'C');
+        $pdf->Ln(10);
+        $pdf->SetFont('Arial','',12);
+        $pdf->Cell(0, 10, 'Fecha: ' . $this->fecha, 0, 1);
+        $pdf->Cell(0, 10, 'Hora Inicio: ' . $this->hora_inicio, 0, 1);
+        $pdf->Cell(0, 10, 'Hora Fin: ' . $this->calcularHoraFin(), 0, 1);
+        $pdf->Cell(0, 10, 'Duracion: ' . $this->duracion . ' minutos', 0, 1);
+        $pdf->Cell(0, 10, 'Precio: $' . number_format($precioTotal, 0, ',', '.'), 0, 1);
+        
+        // Ruta del código QR
+        $qrPath = $factura->getCodigoQR(); // debe ser la ruta de imagen
+        
+        if (file_exists($qrPath)) {
+            $pdf->Image($qrPath, 80, $pdf->GetY() + 10, 50, 50);
+            $pdf->Ln(60); // para que no se encime el texto
+        }
+        
+        // Ruta para guardar el PDF
+        $rutaCarpeta = __DIR__ . "/../facturas";  // Esto te asegura estar dentro de paseaPerritos
+        $nombrePDF = "factura_" . $idFactura . "_" . time() . ".pdf";
+        $rutaPDF = $rutaCarpeta . "/" . $nombrePDF;
+        
+        if (!file_exists($rutaCarpeta)) {
+            mkdir($rutaCarpeta, 0755, true);
+        }
+        
+        $pdf->Output('F', $rutaPDF);
+        
         $conexion->cerrar();
         return ["ok" => true, "mensaje" => "¡Paseo reservado exitosamente!"];
     }
