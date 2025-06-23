@@ -147,10 +147,9 @@ class Paseo {
             $this->hora_inicio,
             $this->calcularHoraFin(),
             $idTarifa,
-            $this->precio,      
-            $this->duracion      
+            $this->precio,
+            $this->duracion
             );
-        
         
         $sqlSimultaneo = $dao->consultarPaseosSimultaneos(
             $this->fecha,
@@ -168,27 +167,43 @@ class Paseo {
         
         // 3. Insertar el paseo primero
         $conexion->ejecutar($dao->insertar());
-        $idPaseo = $conexion->obtenerUltimoId(); // ahora sí lo tienes
+        $idPaseo = $conexion->obtenerUltimoId();
         $this->id = $idPaseo;
         
-        // 4. Crear e insertar la factura
+        // 4. Validar objetos completos
+        if (!is_object($this->paseador)) {
+            $paseadorObj = new Paseador($this->paseador);
+            $paseadorObj->consultar();
+            $this->paseador = $paseadorObj;
+        }
+        
+        if (!is_object($this->perrito)) {
+            $perritoObj = new Perrito($this->perrito);
+            $perritoObj->consultar();
+            $this->perrito = $perritoObj;
+        }
+        
+        // 1. Preparar nombre del PDF y URL pública
+        $rutaCarpeta = __DIR__ . "/../facturas";
+        if (!file_exists($rutaCarpeta)) {
+            mkdir($rutaCarpeta, 0755, true);
+        }
+        $nombrePDF = "factura_" . $idPaseo . "_" . time() . ".pdf";
+        $rutaPDF = $rutaCarpeta . "/" . $nombrePDF;
+        $baseUrl = "http://localhost/paseaPerritos/facturas";
+        $urlFactura = $baseUrl . "/" . $nombrePDF;
+        
+        // 2. Crear QR con esa URL (antes del PDF)
         $factura = new Factura("", "", date("Y-m-d"), $precioTotal);
-        $factura->generarQRCode();
+        $factura->generarQRCode($urlFactura);
+        $factura->setUrlPdf($urlFactura);
         
-        $conexion->ejecutar(
-            (new FacturaDAO(0, $factura->getFechaEmision(), $factura->getTotal(), $factura->getCodigoQR(), $idPaseo))->insertar()
-            );
-        
-        $idFactura = $conexion->obtenerUltimoId();
-        $this->factura = $idFactura;
-        
-        // 5. Crear el PDF
+        // 3. Crear el PDF con el QR
         require_once(__DIR__ . "/../libs/fpdf186/fpdf.php");
         
         $pdf = new FPDF();
         $pdf->AddPage();
         $pdf->SetFont('Arial','B',16);
-        
         
         $pdf->Cell(0, 10, 'Detalle del Paseo', 0, 1, 'C');
         $pdf->Ln(10);
@@ -196,32 +211,42 @@ class Paseo {
         $pdf->Cell(0, 10, 'Fecha: ' . $this->fecha, 0, 1);
         $pdf->Cell(0, 10, 'Hora Inicio: ' . $this->hora_inicio, 0, 1);
         $pdf->Cell(0, 10, 'Hora Fin: ' . $this->calcularHoraFin(), 0, 1);
-        $pdf->Cell(0, 10, 'Duracion: ' . $this->duracion . ' minutos', 0, 1);
-        $pdf->Cell(0, 10, 'Precio: $' . number_format($precioTotal, 0, ',', '.'), 0, 1);
+        $pdf->Cell(0, 10, utf8_decode('Duración: ' . $this->duracion . ' minutos'), 0, 1);
+        $pdf->Cell(0, 10, utf8_decode('Precio: $' . number_format($precioTotal, 0, ',', '.')), 0, 1);
+        $pdf->Cell(0, 10, utf8_decode('Perrito: ' . $this->perrito->getNombre()), 0, 1);
+        $pdf->Cell(0, 10, utf8_decode('Paseador: ' . $this->paseador->getNombre()), 0, 1);
         
-        $qrPath = $factura->getCodigoQR(); 
         
-        if (file_exists($qrPath)) {
-            $pdf->Image($qrPath, 80, $pdf->GetY() + 10, 50, 50);
-            $pdf->Ln(60); 
+        // Insertar QR generado
+        $qrPath = $factura->getCodigoQR(); // ej: archivos_qr/qr_xxx.png
+        $qrPathCompleto = __DIR__ . "/../" . $qrPath;
+        if (file_exists($qrPathCompleto)) {
+            $pdf->Image($qrPathCompleto, 80, $pdf->GetY() + 10, 50, 50);
+            $pdf->Ln(60);
         }
         
-        // Ruta para guardar el PDF
-        $rutaCarpeta = __DIR__ . "/../facturas";  
-        $nombrePDF = "factura_" . $idFactura . "_" . time() . ".pdf";
-        $rutaPDF = $rutaCarpeta . "/" . $nombrePDF;
-        
-        if (!file_exists($rutaCarpeta)) {
-            mkdir($rutaCarpeta, 0755, true);
-        }
-        
+        // 4. Guardar el PDF
         $pdf->Output('F', $rutaPDF);
+        
+        // 5. Insertar la factura en la BD
+        $conexion->ejecutar(
+            (new FacturaDAO(
+                0,
+                $factura->getFechaEmision(),
+                $factura->getTotal(),
+                $factura->getCodigoQR(),  // archivo QR
+                $idPaseo,
+                $factura->getUrlPdf()     // URL pública al PDF
+                ))->insertar()
+            );
+        
+        $idFactura = $conexion->obtenerUltimoId();
+        $this->factura = $idFactura;
         
         $conexion->cerrar();
         return ["ok" => true, "mensaje" => "¡Paseo reservado exitosamente!"];
     }
-    
-    
+
     private function calcularHoraFin() {
         $inicio = strtotime($this->hora_inicio);
         $fin = $inicio + ((int)$this->duracion * 60);

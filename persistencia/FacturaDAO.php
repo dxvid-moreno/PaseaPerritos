@@ -6,13 +6,15 @@ class FacturaDAO {
     private $total;
     private $qr_code_url;
     private $id_paseo;
+    private $url_pdf;
     
-    public function __construct($id = 0, $fecha_emision = "", $total = "", $qr_code_url = "", $id_paseo = "") {
+    public function __construct($id = 0, $fecha_emision = "", $total = "", $qr_code_url = "", $id_paseo = "",$url_pdf="") {
         $this->id = $id;
         $this->fecha_emision = $fecha_emision;
         $this->total = $total;
         $this->qr_code_url = $qr_code_url;
         $this->id_paseo = $id_paseo;
+        $this->url_pdf = $url_pdf;
     }
     
     public function consultar() {
@@ -22,12 +24,12 @@ class FacturaDAO {
     }
     
     public function insertar() {
-        return "INSERT INTO Factura (fecha_emision, total, qr_code_url, id_paseo)
+        return "INSERT INTO Factura (fecha_emision, total, qr_code_url, id_paseo,url_pdf)
                 VALUES (
                     '" . $this->fecha_emision . "',
                     '" . $this->total . "',
                     '" . $this->qr_code_url . "',
-                    '" . $this->id_paseo . "'
+                    '" . $this->id_paseo . "', '".$this->url_pdf."'
                 )";
     }
     
@@ -39,14 +41,16 @@ class FacturaDAO {
                     id_paseo = '" . $this->id_paseo . "'
                 WHERE idFactura = '" . $this->id . "'";
     }
+    
     public function consultarPorDueno($idDueno) {
-        return "SELECT f.id_factura, f.fecha_emision, f.total, f.qr_code_url, p.fecha, p.hora_inicio, pe.nombre
+        return "SELECT f.id_factura, f.fecha_emision, f.total, f.qr_code_url, f.url_pdf, p.fecha, p.hora_inicio, pe.nombre
             FROM Factura f
             INNER JOIN Paseo p ON f.id_paseo = p.idPaseo
             INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
             WHERE pe.idDueno = '$idDueno'
             ORDER BY f.fecha_emision DESC";
     }
+    
     
 }
 ?>

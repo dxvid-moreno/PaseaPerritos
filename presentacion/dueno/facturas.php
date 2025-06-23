@@ -16,8 +16,8 @@ $facturas = $facturaObj->consultarPorDueno($idDueno);
             <tr>
                 <th>Fecha de Paseo</th>
                 <th>Hora</th>
-                <th>Total</th>
                 <th>Perrito</th>
+                <th>Total</th>
                 <th>QR</th>
                 <th>PDF</th>
             </tr>
@@ -37,15 +37,11 @@ $facturas = $facturaObj->consultarPorDueno($idDueno);
                     <?php endif; ?>
                 </td>
                 <td>
-                    <?php
-                    $idFactura = $f->getId();
-                    $nombrePDF = glob("facturas/factura_{$idFactura}_*.pdf");
-                    if ($nombrePDF && file_exists($nombrePDF[0])) {
-                        echo "<a href='{$nombrePDF[0]}' target='_blank' class='btn btn-sm btn-outline-primary'>Ver PDF</a>";
-                    } else {
-                        echo "<span class='text-muted'>No generado</span>";
-                    }
-                    ?>
+                    <?php if ($f->getUrlPdf()): ?>
+                        <a href="<?= $f->getUrlPdf() ?>" target="_blank" class="btn btn-sm btn-outline-primary">Ver PDF</a>
+                    <?php else: ?>
+                        <span class="text-muted">No generado</span>
+                    <?php endif; ?>
                 </td>
             </tr>
             <?php endforeach; ?>

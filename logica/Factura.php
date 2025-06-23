@@ -10,14 +10,25 @@ class Factura {
     private $fecha_emision;
     private $total;
     private $id_paseo;
+    private $url_pdf;
     
-    public function __construct($id = "", $codigo_qr = "", $fecha_emision = "", $total = "", $id_paseo = "") {
+    public function __construct($id = "", $codigo_qr = "", $fecha_emision = "", $total = "", $id_paseo = "",$url_pdf="") {
         $this->id = $id;
         $this->codigo_qr = $codigo_qr;
         $this->fecha_emision = $fecha_emision;
         $this->total = $total;
         $this->id_paseo = $id_paseo;
+        $this->url_pdf = $url_pdf;
     }
+    
+    public function getUrlPdf() {
+        return $this->url_pdf;
+    }
+    
+    public function setUrlPdf($url_pdf) {
+        $this->url_pdf = $url_pdf;
+    }
+    
     
     public function getId() {
         return $this->id;
@@ -59,19 +70,22 @@ class Factura {
         $this->id_paseo = $id_paseo;
     }
     
-    public function generarQRCode() {
-        $contenido = "Factura por: $" . $this->total . " - Fecha: " . $this->fecha_emision;
-        $nombreArchivo = uniqid("qr_") . ".png";
-        $ruta = __DIR__ . "/../archivos_qr/" . $nombreArchivo;
+    public function generarQRCode($contenido) {
+        require_once(__DIR__ . '/../libs/phpqrcode/qrlib.php');
         
-        // Crear carpeta si no existe
+        $nombreArchivo = uniqid("qr_") . ".png";
+        $ruta = __DIR__ . '/../archivos_qr/' . $nombreArchivo;
+        
         if (!file_exists(dirname($ruta))) {
             mkdir(dirname($ruta), 0777, true);
         }
         
-        QRcode::png($contenido, $ruta, QR_ECLEVEL_L, 4);
+        \QRcode::png($contenido, $ruta, QR_ECLEVEL_L, 4);
+        
+        // Guardar solo la ruta relativa
         $this->codigo_qr = "archivos_qr/" . $nombreArchivo;
     }
+    
     public function consultarPorDueno($idDueno) {
         $dao = new FacturaDAO();
         $conexion = new Conexion();
@@ -85,19 +99,18 @@ class Factura {
             $factura->setFechaEmision($registro[1]);
             $factura->setTotal($registro[2]);
             $factura->setCodigoQR($registro[3]);
+            $factura->setUrlPdf($registro[4]); // NUEVO
             
-            // Datos extra
-            $factura->datos["fecha_paseo"] = $registro[4];
-            $factura->datos["hora_inicio"] = $registro[5];
-            $factura->datos["nombre_perrito"] = $registro[6];
+            $factura->datos["fecha_paseo"] = $registro[5];
+            $factura->datos["hora_inicio"] = $registro[6];
+            $factura->datos["nombre_perrito"] = $registro[7];
             
             $facturas[] = $factura;
         }
-        
-        
         $conexion->cerrar();
         return $facturas;
     }
+    
     
 }
 ?>
