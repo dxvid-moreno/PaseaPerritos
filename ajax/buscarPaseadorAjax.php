@@ -91,6 +91,10 @@ echo $salida;
             <textarea class="form-control" name="descripcion" id="descripcionPaseador"></textarea>
           </div>
           <div class="mb-3">
+              <label for="valorHora" class="form-label">Tarifa por hora ($)</label>
+              <input type="number" class="form-control" name="valor_hora" id="valorHora" required min="5000">
+            </div>
+          <div class="mb-3">
             <label for="fotoPaseador" class="form-label">Foto de perfil (opcional)</label>
             <input type="file" class="form-control" name="foto" id="fotoPaseador" accept="image/*">
           </div>
@@ -116,6 +120,7 @@ $(document).ready(function() {
       $("#correoPaseador").val(datos.correo);
       $("#descripcionPaseador").val(datos.descripcion || "");
       $("#clavePaseador").val("");
+      $("#valorHora").val(datos.valor_hora);
       const modal = new bootstrap.Modal(document.getElementById('modalEditarPaseador'));
       modal.show();
     });

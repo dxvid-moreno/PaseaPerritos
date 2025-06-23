@@ -37,9 +37,6 @@ if (isset($_SESSION["id"])) {
         <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
             <!-- Opciones por rol -->
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/inicio.php"); ?>">Inicio</a>
-                </li>
 
                 <?php if ($rol === "admin"): ?>
                     <li class="nav-item">
@@ -52,7 +49,7 @@ if (isset($_SESSION["id"])) {
                         <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/admin/administrar_perrito.php"); ?>">Administrar Perritos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="logs.php">Estadísticas</a>
+                        <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/admin/estadisticas.php"); ?>">Estadísticas</a>
                     </li>
                 <?php elseif ($rol === "dueno"): ?>
                     <li class="nav-item">

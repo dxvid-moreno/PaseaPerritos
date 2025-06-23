@@ -9,13 +9,10 @@ require_once("logica/Dueno.php");
 $id = $_SESSION["id"];
 $rol = $_SESSION["rol"];
 
-// Obtener estado desde GET
 $estado = isset($_GET["estado"]) ? intval($_GET["estado"]) : 0;
 
-// Crear instancia de Paseo
 $paseo = new Paseo();
 
-// Consultar paseos según el estado
 if ($estado > 0) {
     $paseos = $paseo->consultarPorEstado($estado, $rol, $id);
 } else {
@@ -39,17 +36,16 @@ $colores = [
 ?>
 
 <div class="container mt-5">
-    <form method="get" class="mb-3">
-        <input type="hidden" name="pid" value="<?php echo $_GET["pid"]; ?>">
-        <div class="btn-group" role="group" aria-label="Filtro de estado">
+    <div class="mb-3">
+        <div class="btn-group" role="group" aria-label="Filtro de estado" id="botones-estado">
             <?php
             foreach ($estados as $key => $label) {
-                $active = ($estado == $key) ? 'active' : '';
-                echo '<button type="submit" name="estado" value="' . $key . '" class="btn btn-outline-' . $colores[$key] . ' ' . $active . '">' . $label . '</button>';
+                echo '<button type="button" data-estado="' . $key . '" class="btn btn-outline-' . $colores[$key] . '">' . $label . '</button>';
             }
             ?>
         </div>
-    </form>
+    </div>
+
     
 
 
@@ -66,7 +62,7 @@ $colores = [
                 <th>Acción</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tabla-paseos">
             <?php
             if (count($paseos) > 0) {
                 foreach ($paseos as $p) {
@@ -78,7 +74,17 @@ $colores = [
                     echo "<td>" . $p->getPaseador()->getNombre() . "</td>";
                     echo "<td>$" . number_format($p->getTarifa(), 0, ',', '.') . "</td>";
                     echo "<td>" . $p->getEstadoPaseo()->getNombre() . "</td>";
-                    echo "<td>aqui va ajax</td>";
+                    echo "<td>";
+                    if ($p->getEstadoPaseo()->getId() == 1) { // Solo cuando está Reservado
+                        echo '<button class="btn btn-sm btn-danger cancelar-paseo" data-id="' . $p->getId() . '">Cancelar</button>';
+                    } elseif ($p->getEstadoPaseo()->getId() == 3) {
+                        echo '<span class="text-danger">Cancelado</span>';
+                    } elseif ($p->getEstadoPaseo()->getId() == 2) {
+                        echo '<span class="text-success">Realizado</span>';
+                    } else {
+                        echo '-';
+                    }
+                    echo "</td>";
                     echo "</tr>";
                 }
             } else {
@@ -88,3 +94,56 @@ $colores = [
         </tbody>
     </table>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const tabla = document.getElementById("tabla-paseos");
+
+    function cargarPaseos(estado) {
+        fetch("ajax/cargarPaseosAjax.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `estado=${estado}`
+        })
+        .then(res => res.text())
+        .then(html => {
+            tabla.innerHTML = html;
+            activarBotonesCancelar();
+        });
+    }
+
+    function activarBotonesCancelar() {
+        document.querySelectorAll(".cancelar-paseo").forEach(boton => {
+            boton.addEventListener("click", function() {
+                const idPaseo = this.getAttribute("data-id");
+                if (confirm("¿Estás seguro de que deseas cancelar este paseo?")) {
+                    fetch("ajax/cambiarEstadoPaseoAjax.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `id=${idPaseo}&estado=3`
+                    })
+                    .then(res => res.text())
+                    .then(msg => {
+                        alert(msg);
+                        cargarPaseos(0);
+                    });
+                }
+            });
+        });
+    }
+
+    document.querySelectorAll("button[data-estado]").forEach(btn => {
+        btn.addEventListener("click", function() {
+            const estado = this.getAttribute("data-estado");
+            cargarPaseos(estado);
+        });
+    });
+    activarBotonesCancelar();
+
+});
+</script>
+
+

@@ -220,10 +220,11 @@ class Paseo {
             $paseo->setPaseador($paseador);
             
             $estado = new EstadoPaseo();
-            $estado->setNombre($registro[7]);
+            $estado->setId($registro[7]);
+            $estado->setNombre($registro[8]);
             $paseo->setEstadoPaseo($estado);
             
-            $paseo->setTarifa($registro[8]);
+            $paseo->setTarifa($registro[9]);
             
             $paseos[] = $paseo;
         }
@@ -258,10 +259,12 @@ class Paseo {
             $paseo->setPaseador($paseador);
             
             $estado = new EstadoPaseo();
-            $estado->setNombre($registro[7]);
+            $estado->setId($registro[7]);
+            $estado->setNombre($registro[8]); 
             $paseo->setEstadoPaseo($estado);
             
-            $paseo->setTarifa($registro[8]);
+            
+            $paseo->setTarifa($registro[9]);
             
             $paseos[] = $paseo;
         }
@@ -269,5 +272,19 @@ class Paseo {
         $conexion->cerrar();
         return $paseos;
     }
+    
+    public function cambiarEstado($nuevoEstado) {
+        $this->estadoPaseo = new EstadoPaseo($nuevoEstado);
+        $dao = new PaseoDAO(
+            $this->id,
+            null, null, $this->estadoPaseo
+            );
+        $conexion = new Conexion();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->actualizarEstado());
+        $conexion->cerrar();
+    }
+    
+    
     
 }

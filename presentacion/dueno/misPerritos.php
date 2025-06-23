@@ -48,7 +48,9 @@ $lista = $perrito->consultarPorDueno();
 <body>
 
 <h2>Mis Perritos Registrados</h2>
-
+<div style="text-align: center; margin-bottom: 20px;">
+    <a href="?pid=<?php echo base64_encode("presentacion/dueno/anadirPerrito.php"); ?>" class="btn btn-primary">+ Añadir Nuevo Perrito</a>
+</div>
 <div class="perritos-container">
     <?php if (count($lista) === 0): ?>
         <p style="text-align:center;">No tienes perritos registrados aún.</p>
@@ -56,12 +58,12 @@ $lista = $perrito->consultarPorDueno();
         <?php foreach ($lista as $p): ?>
             <div class="perrito-card">
                 <div class="foto">
-                    <img src="<?= htmlspecialchars($p->getFotoUrl()) ?>" alt="Foto de <?= htmlspecialchars($p->getNombre()) ?>">
+                    <img src="<?= htmlspecialchars($p->getFotoUrl()) ?>" alt="Sin Imagen">
                 </div>
                 <div class="info">
                     <h3><?= htmlspecialchars($p->getNombre()) ?></h3>
                     <p><strong>Raza:</strong> <?= htmlspecialchars($p->getRaza()) ?></p>
-                    <p><strong>Edad:</strong> <?= htmlspecialchars($p->getEdad()) ?> años</p>
+                    <p><strong>Edad:</strong> <?= htmlspecialchars($p->getEdad()) ?> año(s)</p>
                     <p><strong>ID:</strong> <?= htmlspecialchars($p->getId()) ?></p>
                 </div>
             </div>

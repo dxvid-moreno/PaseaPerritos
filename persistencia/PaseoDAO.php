@@ -109,8 +109,8 @@ class PaseoDAO {
         }
         
         return "SELECT p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin,
-               pe.nombre AS perrito_nombre, d.nombre AS dueno_nombre,
-               pa.nombre AS paseador_nombre, ep.nombre AS estado_paseo, tp.valor_hora
+           pe.nombre AS perrito_nombre, d.nombre AS dueno_nombre,
+           pa.nombre AS paseador_nombre, ep.idEstadoPaseo, ep.nombre AS estado_paseo, tp.valor_hora
         FROM Paseo p
         INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
         INNER JOIN Dueno d ON pe.idDueno = d.idDueno
@@ -120,6 +120,7 @@ class PaseoDAO {
         WHERE p.idEstadoPaseo = '$estadoId'
         $filtro
         ORDER BY p.fecha DESC, p.hora_inicio DESC";
+        
     }
     
     public function consultarTodosPorRol($rol, $usuarioId) {
@@ -133,7 +134,8 @@ class PaseoDAO {
         
         return "SELECT p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin,
                pe.nombre AS perrito_nombre, d.nombre AS dueno_nombre,
-               pa.nombre AS paseador_nombre, ep.nombre AS estado_paseo, tp.valor_hora
+               pa.nombre AS paseador_nombre, ep.idEstadoPaseo, ep.nombre AS estado_paseo, tp.valor_hora
+
         FROM Paseo p
         INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
         INNER JOIN Dueno d ON pe.idDueno = d.idDueno
@@ -144,6 +146,9 @@ class PaseoDAO {
         ORDER BY p.fecha DESC, p.hora_inicio DESC";
     }
     
+    public function actualizarEstado() {
+        return "UPDATE paseo SET idEstadoPaseo = " . $this->estadoPaseo->getId() . " WHERE idPaseo = " . $this->id;
+    }
     
 }
 ?>
