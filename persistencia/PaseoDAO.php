@@ -116,7 +116,8 @@ class PaseoDAO {
         INNER JOIN Dueno d ON pe.idDueno = d.idDueno
         INNER JOIN Paseador pa ON p.idPaseador = pa.idPaseador
         INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
-        INNER JOIN TarifaPaseador tp ON tp.idPaseador = pa.idPaseador
+        INNER JOIN TarifaPaseador tp 
+            ON tp.idPaseador = pa.idPaseador AND tp.fecha_fin_vigencia IS NULL
         WHERE p.idEstadoPaseo = '$estadoId'
         $filtro
         ORDER BY p.fecha DESC, p.hora_inicio DESC";

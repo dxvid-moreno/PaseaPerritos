@@ -19,8 +19,8 @@
         
         $tarifa = new TarifaPaseador("", $idPaseador);
         $tarifa->consultarActualPorPaseador();
-        $idTarifa = $tarifa->getId();         // ✔️ ID de la tarifa
-        $valorHora = $tarifa->getValorHora(); // ✔️ Valor por hora
+        $idTarifa = $tarifa->getId();        
+        $valorHora = $tarifa->getValorHora();
         
         $factura = new Factura("", "", date("Y-m-d"), $valorHora);
         $precio = ((int)$_POST['duracion'] / 60) * (float)$valorHora;
@@ -32,7 +32,7 @@
             $_POST['idPerrito'],
             $idDueno,
             $idPaseador,
-            1,          
+            5,          
             $idTarifa,
             "",          
             $precio      

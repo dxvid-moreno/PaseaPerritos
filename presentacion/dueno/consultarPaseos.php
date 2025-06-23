@@ -19,20 +19,24 @@ if ($estado > 0) {
     $paseos = $paseo->consultarTodosPorRol($rol, $id);
 }
 
-// Definir estados
 $estados = [
     0 => 'Todos',
     1 => 'Reservados',
     2 => 'Realizados',
-    3 => 'Cancelados'
+    3 => 'Cancelados',
+    4 => 'Rechazados',
+    5 => 'Pendientes'
 ];
 
 $colores = [
     0 => 'primary',
     1 => 'success',
     2 => 'secondary',
-    3 => 'danger'
+    3 => 'danger',
+    4 => 'dark',
+    5 => 'warning'
 ];
+
 ?>
 
 <div class="container mt-5">
@@ -75,20 +79,30 @@ $colores = [
                     echo "<td>$" . number_format($p->getTarifa(), 0, ',', '.') . "</td>";
                     echo "<td>" . $p->getEstadoPaseo()->getNombre() . "</td>";
                     echo "<td>";
-                    if ($p->getEstadoPaseo()->getId() == 1) { // Solo cuando está Reservado
-                        echo '<button class="btn btn-sm btn-danger cancelar-paseo" data-id="' . $p->getId() . '">Cancelar</button>';
-                    } elseif ($p->getEstadoPaseo()->getId() == 3) {
-                        echo '<span class="text-danger">Cancelado</span>';
-                    } elseif ($p->getEstadoPaseo()->getId() == 2) {
-                        echo '<span class="text-success">Realizado</span>';
-                    } else {
-                        echo '-';
+                    switch ($p->getEstadoPaseo()->getId()) {
+                        case 1: // Reservado
+                            echo '<button class="btn btn-sm btn-danger cancelar-paseo" data-id="' . $p->getId() . '">Cancelar</button>';
+                            break;
+                        case 2: // Realizado
+                            echo '<span class="text-success">Realizado</span>';
+                            break;
+                        case 3: // Cancelado
+                            echo '<span class="text-danger">Cancelado</span>';
+                            break;
+                        case 4: // Rechazado
+                            echo '<span class="text-dark">Rechazado</span>';
+                            break;
+                        case 5: // Pendiente
+                            echo '<span class="text-warning">Pendiente</span>';
+                            break;
+                        default:
+                            echo '-';
                     }
                     echo "</td>";
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='6' class='text-center'>No hay paseos disponibles.</td></tr>";
+                echo "<tr><td colspan='8' class='text-center'>No hay paseos disponibles.</td></tr>";
             }
             ?>
         </tbody>

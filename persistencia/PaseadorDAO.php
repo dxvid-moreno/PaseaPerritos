@@ -46,7 +46,8 @@ class PaseadorDAO {
         return "SELECT p.idPaseador, p.nombre, p.correo, p.foto_url, p.descripcion, t.valor_hora
             FROM Paseador p
             INNER JOIN TarifaPaseador t ON p.idPaseador = t.idPaseador
-            WHERE p.estado = 1";
+            WHERE p.estado = 1
+            AND t.fecha_fin_vigencia IS NULL";
     }
     
     public function obtenerUltimoId() {

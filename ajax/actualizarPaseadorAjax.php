@@ -16,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $paseador->setNombre($nombre);
     $paseador->setCorreo($correo);
     $paseador->setDescripcion($descripcion);
-    $paseador->setDescripcion($valor_hora);
     if (!empty($clave)) {
         $paseador->setClave($clave);
     }
@@ -36,29 +35,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     
     $paseador->actualizar();
-    
-    // Consultar tarifa actual
     $tarifaActual = new TarifaPaseador("", $id);
     $tarifaActual->consultarActualPorPaseador();
-    
-    // Insertar nueva tarifa solo si cambia
     if ($tarifaActual->getValorHora() != $valor_hora) {
-        // Cerrar tarifa anterior
         if ($tarifaActual->getId()) {
             $dao = new TarifaPaseadorDAO(
                 $tarifaActual->getId(),
                 $id,
                 $tarifaActual->getValorHora(),
                 $tarifaActual->getFechaInicio(),
-                date("Y-m-d") // Fecha fin de la anterior
+                date("Y-m-d") 
                 );
             $conexion = new Conexion();
             $conexion->abrir();
             $conexion->ejecutar($dao->actualizar());
             $conexion->cerrar();
         }
-        
-        // Insertar nueva tarifa
         $nuevaTarifa = new TarifaPaseador(
             "", $id, $valor_hora, date("Y-m-d"), null
             );
