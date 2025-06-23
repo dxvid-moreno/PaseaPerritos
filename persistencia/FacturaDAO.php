@@ -39,5 +39,14 @@ class FacturaDAO {
                     id_paseo = '" . $this->id_paseo . "'
                 WHERE idFactura = '" . $this->id . "'";
     }
+    public function consultarPorDueno($idDueno) {
+        return "SELECT f.id_factura, f.fecha_emision, f.total, f.qr_code_url, p.fecha, p.hora_inicio, pe.nombre
+            FROM Factura f
+            INNER JOIN Paseo p ON f.id_paseo = p.idPaseo
+            INNER JOIN Perrito pe ON p.idPerrito = pe.idPerrito
+            WHERE pe.idDueno = '$idDueno'
+            ORDER BY f.fecha_emision DESC";
+    }
+    
 }
 ?>

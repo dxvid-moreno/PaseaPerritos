@@ -62,7 +62,7 @@ if (isset($_SESSION["id"])) {
                         <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/dueno/reservarPaseo.php"); ?>">Reservar Paseo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="facturas.php">Facturas</a>
+                        <a class="nav-link" href="?pid=<?php echo base64_encode("presentacion/dueno/facturas.php"); ?>">Facturas</a>
                     </li>
                 <?php elseif ($rol === "paseador"): ?>
                     <li class="nav-item">

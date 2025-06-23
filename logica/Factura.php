@@ -72,5 +72,32 @@ class Factura {
         QRcode::png($contenido, $ruta, QR_ECLEVEL_L, 4);
         $this->codigo_qr = "archivos_qr/" . $nombreArchivo;
     }
+    public function consultarPorDueno($idDueno) {
+        $dao = new FacturaDAO();
+        $conexion = new Conexion();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->consultarPorDueno($idDueno));
+        
+        $facturas = [];
+        while ($registro = $conexion->registro()) {
+            $factura = new Factura();
+            $factura->setId($registro[0]);
+            $factura->setFechaEmision($registro[1]);
+            $factura->setTotal($registro[2]);
+            $factura->setCodigoQR($registro[3]);
+            
+            // Datos extra
+            $factura->datos["fecha_paseo"] = $registro[4];
+            $factura->datos["hora_inicio"] = $registro[5];
+            $factura->datos["nombre_perrito"] = $registro[6];
+            
+            $facturas[] = $factura;
+        }
+        
+        
+        $conexion->cerrar();
+        return $facturas;
+    }
+    
 }
 ?>

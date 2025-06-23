@@ -189,7 +189,7 @@ class Paseo {
         $pdf->AddPage();
         $pdf->SetFont('Arial','B',16);
         
-        // Contenido
+        
         $pdf->Cell(0, 10, 'Detalle del Paseo', 0, 1, 'C');
         $pdf->Ln(10);
         $pdf->SetFont('Arial','',12);
@@ -199,16 +199,15 @@ class Paseo {
         $pdf->Cell(0, 10, 'Duracion: ' . $this->duracion . ' minutos', 0, 1);
         $pdf->Cell(0, 10, 'Precio: $' . number_format($precioTotal, 0, ',', '.'), 0, 1);
         
-        // Ruta del código QR
-        $qrPath = $factura->getCodigoQR(); // debe ser la ruta de imagen
+        $qrPath = $factura->getCodigoQR(); 
         
         if (file_exists($qrPath)) {
             $pdf->Image($qrPath, 80, $pdf->GetY() + 10, 50, 50);
-            $pdf->Ln(60); // para que no se encime el texto
+            $pdf->Ln(60); 
         }
         
         // Ruta para guardar el PDF
-        $rutaCarpeta = __DIR__ . "/../facturas";  // Esto te asegura estar dentro de paseaPerritos
+        $rutaCarpeta = __DIR__ . "/../facturas";  
         $nombrePDF = "factura_" . $idFactura . "_" . time() . ".pdf";
         $rutaPDF = $rutaCarpeta . "/" . $nombrePDF;
         
