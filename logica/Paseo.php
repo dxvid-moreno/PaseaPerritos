@@ -165,6 +165,21 @@ class Paseo {
             return ["ok" => false, "mensaje" => "Este paseador ya tiene 2 paseos en ese horario."];
         }
         
+        // Validar que el perrito no tenga un paseo en el mismo horario
+        $sqlPerrito = $dao->consultarPaseosSimultaneosPorPerrito(
+            $this->fecha,
+            $this->hora_inicio,
+            $this->calcularHoraFin(),
+            $this->perrito
+            );
+        $conexion->ejecutar($sqlPerrito);
+        $cantidadPerrito = $conexion->registro()[0];
+        
+        if ($cantidadPerrito > 0) {
+            $conexion->cerrar();
+            return ["ok" => false, "mensaje" => "Este perrito ya tiene un paseo en ese horario."];
+        }
+        
         // 3. Insertar el paseo primero
         $conexion->ejecutar($dao->insertar());
         $idPaseo = $conexion->obtenerUltimoId();

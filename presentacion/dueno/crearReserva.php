@@ -91,5 +91,6 @@
             const [hora, minutos] = this.value.split(":");
             this.value = `${hora}:00`;
         });
+        
     });
 </script>

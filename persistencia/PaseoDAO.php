@@ -59,6 +59,19 @@ class PaseoDAO {
                     (hora_inicio < '$hora_fin' AND hora_fin > '$hora_inicio')
                 )";
     }
+    
+    public function consultarPaseosSimultaneosPorPerrito($fecha, $hora_inicio, $hora_fin, $idPerrito) {
+        $id = is_object($idPerrito) ? $idPerrito->getId() : $idPerrito;
+        
+        return "SELECT COUNT(*) as cantidad
+            FROM Paseo
+            WHERE idPerrito = '$id'
+            AND fecha = '$fecha'
+            AND (
+                (hora_inicio < '$hora_fin' AND hora_fin > '$hora_inicio')
+            )";
+    }
+    
 
     public function consultar() {
         return "SELECT idPerrito, idPaseador, idEstadoPaseo, fecha, hora_inicio, hora_fin, idFactura
