@@ -63,7 +63,7 @@
 
     <div class="mb-3">
         <label class="form-label">Hora de inicio:</label>
-        <input type="time" name="hora_inicio" class="form-control" required>
+        <input type="time" name="hora_inicio" class="form-control" step="3600" required id="horaInicio">
     </div>
 
     <div class="mb-3">
@@ -82,3 +82,14 @@
 <?php endif; ?>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const horaInput = document.getElementById("horaInicio");
+
+        // Asegurar que los minutos siempre sean 00 al cambiar el valor
+        horaInput.addEventListener("change", function () {
+            const [hora, minutos] = this.value.split(":");
+            this.value = `${hora}:00`;
+        });
+    });
+</script>

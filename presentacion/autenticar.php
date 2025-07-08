@@ -115,4 +115,24 @@ if (isset($_POST["autenticar"])) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
+<script>
+document.querySelector("form").addEventListener("submit", function (e) {
+    const correo = document.getElementById("correo").value.trim();
+    const clave = document.getElementById("clave").value.trim();
+
+    if (correo === "" || clave === "") {
+        alert("Los campos no pueden estar vacíos ni tener solo espacios.");
+        e.preventDefault();
+        return;
+    }
+
+    // Validación adicional: no permitir espacios en medio del correo o clave
+    if (/\s/.test(correo) || /\s/.test(clave)) {
+        alert("Los campos no deben contener espacios.");
+        e.preventDefault();
+    }
+});
+</script>
+
 </html>
