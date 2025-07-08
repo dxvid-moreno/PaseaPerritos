@@ -86,14 +86,12 @@ class Perrito {
         $conexion->ejecutar($PerritoDAO->consultar());
         
         if ($registro = $conexion->registro()) {
-            $this->nombre = $registro[0]; // nombre
+            $this->nombre = $registro[0];
             $this->raza = $registro[1];
-            $this->foto_url = $registro[2]; // si la usas
+            $this->foto_url = $registro[2];
             $this->edad = $registro[3];
-            
-            // Cargar el dueño
             $dueno = new Dueno($registro[4]);
-            $dueno->consultar(); // Debe existir en clase Dueno
+            $dueno->consultar(); 
             $this->dueno = $dueno;
         }
         

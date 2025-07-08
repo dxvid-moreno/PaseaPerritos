@@ -176,11 +176,30 @@ class PaseoDAO {
     
     public function paseosPorEstado() {
         return "
-        SELECT ep.nombre AS estado, COUNT(*) AS cantidad
-        FROM Paseo p
-        INNER JOIN EstadoPaseo ep ON p.idEstadoPaseo = ep.idEstadoPaseo
+        SELECT ep.nombre AS estado, COUNT(p.idPaseo) AS cantidad
+        FROM EstadoPaseo ep
+        JOIN Paseo p ON ep.idEstadoPaseo = p.idEstadoPaseo
         GROUP BY ep.nombre
-        ORDER BY cantidad DESC
+        ORDER BY ep.idEstadoPaseo ASC
+    ";
+    }
+    
+    
+    public function paseosPorMes() {
+        return "
+    SELECT DATE_FORMAT(fecha, '%Y-%m') AS mes, COUNT(*) AS total
+    FROM Paseo
+    GROUP BY mes
+    ORDER BY mes ASC
+    ";
+    }
+    
+    public function ingresosPorMes() {
+        return "
+    SELECT DATE_FORMAT(fecha, '%Y-%m') AS mes, SUM(precio) AS ingresos
+    FROM Paseo
+    GROUP BY mes
+    ORDER BY mes ASC
     ";
     }
     

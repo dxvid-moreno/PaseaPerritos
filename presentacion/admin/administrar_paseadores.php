@@ -41,6 +41,10 @@ $(document).ready(function(){
             }
         });
     });
+    $(document).on('hidden.bs.modal', '.modal', function () {
+        $('.modal-backdrop').remove(); // Elimina fondo negro
+        $('body').removeClass('modal-open'); // Elimina scroll lock
+    });  
 });
 </script>
 

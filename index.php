@@ -22,6 +22,8 @@
 <link href="https://use.fontawesome.com/releases/v6.7.2/css/all.css"rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" ></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.min.js" ></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 </head>
 <?php 
 if (!isset($_GET["pid"])) {

@@ -400,5 +400,49 @@ class Paseo {
         return $distribucion;
     }
     
+    public function obtenerDatosGraficos() {
+        $dao = new PaseoDAO();
+        $conexion = new Conexion();
+        $conexion->abrir();
+        
+        // 1. Estados
+        $conexion->ejecutar($dao->paseosPorEstado());
+        $porEstado = [];
+        while ($registro = $conexion->registro()) {
+            $porEstado[] = [$registro[0], (int)$registro[1]];
+        }
+        
+        // 2. Paseos por paseador
+        $conexion->ejecutar($dao->paseosPorPaseador());
+        $porPaseador = [];
+        while ($registro = $conexion->registro()) {
+            $porPaseador[] = [$registro[0], (int)$registro[1]];
+        }
+        
+        // 3. Paseos por mes
+        $conexion->ejecutar($dao->paseosPorMes());
+        $porMes = [];
+        while ($registro = $conexion->registro()) {
+            $porMes[] = [$registro[0], (int)$registro[1]];
+        }
+        
+        // 4. Ingresos por mes
+        $conexion->ejecutar($dao->ingresosPorMes());
+        $ingresos = [];
+        while ($registro = $conexion->registro()) {
+            $ingresos[] = [$registro[0], (float)$registro[1]];
+        }
+        
+        $conexion->cerrar();
+        
+        return [
+            "porEstado" => $porEstado,
+            "porPaseador" => $porPaseador,
+            "porMes" => $porMes,
+            "ingresos" => $ingresos
+        ];
+    }
+    
+    
     
 }
